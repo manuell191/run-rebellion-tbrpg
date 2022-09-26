@@ -1,4 +1,3 @@
-import random
 from turn import Turn
 
 class Game:
