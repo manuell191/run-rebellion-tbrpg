@@ -3,12 +3,10 @@ import random
 class Enemy:
   def __init__(self):
     self.enemylist = ["troll ", "criminal ", "young dragon ", "wolf ", "knight ", "cultist "]
-    self.prizelist = ["You will gain 1 GP and 5 XP.", "You will gain 2 GP and 5 XP.", "You will gain 3 GP and 5 XP.", 
-    "You will gain 4 GP and 5 XP.", "You will gain 5 GP and 5 XP.", "You will gain 6 GP and 10 XP.", "You will gain 7 GP and 10 XP.",
-    "You will gain 8 GP and 10XP.", "You will gain 9 GP and 10 XP.", "You will gain 10 GP and 10 XP."]
     self.enemy = None
     self.prize = None
-  
+
+  #creates a random enemy, and adds [gp, xp] as self.prize
   def setEnemy(self):
     x = random.randint(0, 5)
     
