@@ -1,0 +1,15 @@
+[[package]]
+name = "quest"
+version = "0.1.1"
+description = "UNKNOWN"
+category = "main"
+optional = false
+python-versions = "*"
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.8"
+content-hash = "afd951609af2142db5637a259fea5d5f1418468d908a803d8e3b5ab604c70853"
+
+[metadata.files]
+quest = []
