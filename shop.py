@@ -34,7 +34,15 @@ class Shop:
 			spacelist = [" " for k in range(spaces)]
 			spacestring = "".join(spacelist)
 			print(j.name + str(spacestring) + "cost: " + str(j.cost))
-		print("\nYou have {0} GP.\n".format(player.GP))
+
+		print("")
+		
+		title = "Your current GP:"
+		spaces = 25 - len(title)
+		spacelist = [" " for i in range(spaces)]
+		spacestring = "".join(spacelist)
+		print(title + spacestring + str(player.GP))
+		print("")
 		
 		time.sleep(0.3)
 		
@@ -52,13 +60,25 @@ class Shop:
 		else:
 			return False
 	
-	def buygear(self, choice, geartype, playergp):
+	def buygear(self, choice, geartype, player):
 		if geartype == "weapon":
-			print(self.weapondict[choice].name.capitalize() + " has been equiped!")
-			return self.weapondict[choice]
+			if player.GP >= self.weapondict[choice].cost:
+				player.GP -= self.weapondict[choice].cost
+				print(self.weapondict[choice].name.capitalize() + " has been equiped!")
+				return self.weapondict[choice]
+			else:
+				return "invalid"
 		elif geartype == "armor":
-			print(self.armordict[choice].name.capitalize() + " has been equiped!")
-			return self.armordict[choice]
+			if player.GP >=self.armordict[choice].cost:
+				player.GP -= self.armordict[choice].cost
+				print(self.armordict[choice].name.capitalize() + " has been equiped!")
+				return self.armordict[choice]
+			else:
+				return "invalid"
 		elif geartype == "potion":
-			print(self.potiondict[choice].name.capitalize() + " has been added to your inventory!")
-			return self.potiondict[choice]
+			if player.GP >= self.potiondict[choice].cost:
+				player.GP -= self.potiondict[choice].cost
+				print(self.potiondict[choice].name.capitalize() + " has been added to your inventory!")
+				return self.potiondict[choice]
+			else:
+				return "invalid"

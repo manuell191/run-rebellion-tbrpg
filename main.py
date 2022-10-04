@@ -26,6 +26,7 @@ class Game:
 	
 	def run(self):
 		self.intro()
+		self.turn.player.save()
 		while self.running:
 			self.running = self.turn.run()
 

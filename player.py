@@ -10,7 +10,7 @@ class Player:
 		self.potion_list = []
 		
 		self.save_weapon = None
-		self.save_weapon = None
+		self.save_armor = None
 		self.save_potion =[] 
 		
 		#player stats
@@ -119,7 +119,25 @@ class Player:
 				self.city = 5
 		else:
 			print("The city \"{}\" is not available".format(destination))
-			
+
+	def levelup(self, stat):
+		if stat == "health":
+			x = random.randint(1, 10)
+			self.maxHP += x
+			self.curHP = self.maxHP
+			self.XP -= self.level * 25
+			print("Your max health went up by {0} and you now have {1} health".format(x, self.maxHP))
+		elif stat == "strength" and self.STR < 5:
+			self.STR += 1
+			self.XP -= self.level * 25
+			print("Your strength went up by 1")
+		elif stat == "dexterity" and self.DEX < 5:
+			self.DEX += 1
+			self.XP -= self.level * 25
+			print("Your dexterity went up by 1")
+		else:
+			print("That stat is not available")
+	
 	#to save stats
 	def save(self):
 		self.save_weapon = self.equiped_weapon
@@ -137,6 +155,23 @@ class Player:
 		self.saveLevel = self.level
 		self.saveGP = self.GP
 		self.saveCity = self.city
+
+	def deathreset(self):
+		self.equiped_weapon = self.save_weapon
+		self.equiped_armor = self.save_armor
+		self.potion_list = self.save_potion
+
+		self.story = self.saveStory
+		self.city = self.saveCity
+		self.maxHP = self.saveMaxHP
+		self.curHP = self.saveCurHP
+		self.STR = self.saveSTR
+		self.DEX = self.saveDEX
+		self.AC = self.saveAC
+		self.XP = self.saveXP
+		self.level = self.saveLevel
+		self.GP = self.saveGP
+		self.city = self.saveCity
 		
 	#setup for intro
 	def setStats(self, newstatlist):

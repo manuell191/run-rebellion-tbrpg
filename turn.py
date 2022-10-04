@@ -2,6 +2,7 @@ from player import Player
 from shop import Shop
 from gear import Gear
 from quest import Quest
+import time
 
 class Turn:
 	def __init__(self):
@@ -11,7 +12,7 @@ class Turn:
 			"Shop --- to visit the local shop", "Quest --- to venture on a small quest", "Rest --- to rest and restore health",
 			"Talk --- to speak to locals", "Observe --- to look around the town and the scnerey", "Travel --- to travel to a different location",
 			"Location --- to check your current location", "Gear --- to review your current gear", "Stats --- to review your character stats", 
-			"Save --- save the game locally", "Help --- to get tips on how to play the game", "End --- to end the game"]
+			"Level --- level up (costs 25 times your level)", "Save --- save the game locally", "Help --- to get tips on how to play the game", "End --- to end the game"]
 		
 		#set all gear
 		self.dagger = Gear("weapon", "dagger", [1, 4], 0, 0, 1, 0, 5)
@@ -30,7 +31,7 @@ class Turn:
 		self.breastPlate = Gear("armor", "breast plate armor", 0, 2, 0, 0, 5, 28)
 		self.halfPlate = Gear("armor", "half plate armor", 0, 2, 0, 0, 6, 25)
 		self.chainMail = Gear("armor", "chain main armor", 0, 0, 1, 0, 8, 63)
-		self.splintMail = Gear("armor", "splint mail armor", 0, 0, 2, 0, 9, 79)
+		self.mailSplinted = Gear("armor", "mail splinted armor", 0, 0, 2, 0, 9, 79)
 		self.fullPlate = Gear("armor", "full plate armor", 0, 0, 2, 0, 10, 94)
 		
 		self.healthPotion = Gear("potion", "health potion", 0, [3, 7], 0, 0, 0, 10)
@@ -157,15 +158,91 @@ class Turn:
 			"bpa": self.breastPlate,
 			"hpa": self.halfPlate,
 			"cma": self.chainMail,
-			"sma": self.splintMail,
+			"msa": self.mailSplinted,
 			"fpa": self.fullPlate
 		}
 		self.mythpotiondict = {
 			"hp": self.healthPotion
 		}
+
+		self.faeraweapondict = {
+			"gs": self.greatSword,
+			"wa": self.warAxe,
+			"ga": self.greatAxe
+		}
+		self.faeraarmordict = {
+			"sma": self.scaleMail,
+			"bpa": self.breastPlate,
+			"hpa": self.halfPlate,
+			"cma": self.chainMail,
+			"msa": self.mailSplinted,
+			"fpa": self.fullPlate
+		}
+		self.faerapotiondict = {
+			"hp": self.healthPotion
+		}
+
+		self.kaleinweapondict = {
+			"gs": self.greatSword,
+			"wa": self.warAxe,
+			"ga": self.greatAxe
+		}
+		self.kaleinarmordict = {
+			"sma": self.scaleMail,
+			"bpa": self.breastPlate,
+			"hpa": self.halfPlate,
+			"cma": self.chainMail,
+			"msa": self.mailSplinted,
+			"fpa": self.fullPlate
+		}
+		self.kaleinpotiondict = {
+			"hp": self.healthPotion
+		}
+
+		self.aluraweapondict = {
+			"d": self.dagger,
+			"r": self.rapier,
+			"ss": self.shortSword,
+			"ls": self.longSword,
+			"gs": self.greatSword,
+			"oha": self.oneHandAxe,
+			"wa": self.warAxe,
+			"ga": self.greatAxe
+		}
+		self.aluraarmordict = {
+			"la": self.leatherArmor,
+			"sla": self.studdedLeather,
+			"ha": self.hideArmor,
+			"sma": self.scaleMail,
+			"bpa": self.breastPlate,
+			"hpa": self.halfPlate,
+			"cma": self.chainMail,
+			"msa": self.mailSplinted,
+			"fpa": self.fullPlate
+		}
+		self.alurapotiondict = {
+			"hp": self.healthPotion
+		}
+
+		self.ritharweapondict = {
+			"d": self.dagger,
+			"r": self.rapier,
+			"oha": self.oneHandAxe
+		}
+		self.rithararmordict = {
+			"la": self.leatherArmor,
+			"ha": self.hideArmor
+		}
+		self.ritharpotiondict = {
+			"hp": self.healthPotion
+		}
 		
 		#set city shops
 		self.mythshop = Shop(self.mythweapondict, self.mytharmordict, self.mythpotiondict)
+		self.faerashop = Shop(self.faeraweapondict, self.mytharmordict, self.mythpotiondict)
+		self.kaleinshop = Shop(self.kaleinweapondict, self.kaleinarmordict, self.kaleinpotiondict)
+		self.alurashop = Shop(self.aluraweapondict, self.aluraarmordict, self.alurapotiondict)
+		self.ritharshop = Shop(self.ritharweapondict, self.rithararmordict, self.ritharpotiondict)
 		
 		#begin player instance
 		self.player = Player()
@@ -177,18 +254,39 @@ class Turn:
 		
 	def turn(self, choice):
 		if choice.lower().strip() == "shop":
-			self.mythshop.displaygear(self.player)
+			if self.player.city == 1:
+				shop = self.mythshop
+			elif self.player.city == 2:
+				shop = self.faerashop
+			elif self.player.city == 3:
+				shop = self.kaleinshop
+			elif self.player.city == 4:
+				shop = self.alurashop
+			elif self.player.city == 5:
+				shop = self.ritharshop
+			shop.displaygear(self.player)
 			shopchoice = input(":: ")
 			if shopchoice.lower().strip() == "exit":
 				pass
 			else:
-				isavailable = self.mythshop.checkavailability(shopchoice.lower().strip())
+				isavailable = shop.checkavailability(shopchoice.lower().strip())
 				if isavailable == "weapon":
-					self.player.equiped_weapon = self.mythshop.buygear(shopchoice.lower().strip(), isavailable, self.player.GP)
+					isvalid = shop.buygear(shopchoice.lower().strip(), isavailable, self.player)
+					if isvalid == "invalid":
+						print("You don't have enough GP for this weapon.")
+						return True
+					self.player.equiped_weapon = isvalid
 				elif isavailable == "armor":
-					self.player.equiped_armor = self.mythshop.buygear(shopchoice.lower().strip(), isavailable, self.player.GP)
+					isvalid = shop.buygear(shopchoice.lower().strip(), isavailable, self.player)
+					if isvalid == "invalid":
+						print("You don't have enough GP for this armor.")
+						return True
+					self.player.equpied_armor = isvalid
 				elif isavailable == "potion":
-					potiontoadd = self.mythshop.buygear(shopchoice.lower().strip(), isavailable, self.player.GP)
+					potiontoadd = shop.buygear(shopchoice.lower().strip(), isavailable, self.player)
+					if potiontoadd == "invalid":
+						print("You don't have enough GP for this potion.")
+						return True
 					self.player.potion_list.append(potiontoadd)
 				else:
 					print('"{}" is not available in this shop.'.format(shopchoice))
@@ -203,7 +301,7 @@ class Turn:
 					questresult, earnedgp, earnedxp = quest.run(self.player)
 					break
 				elif questchoice.lower().strip() == "no":
-					break
+					return True
 				else:
 					print('"{}" is not a valid command'.format(questchoice))
 			if questresult == "victory":
@@ -245,6 +343,23 @@ class Turn:
 		elif choice.lower().strip() == "stats":
 			self.player.stats()
 			return True
+		elif choice.lower().strip() == "level":
+			if self.player.XP >= 25 * self.player.level:
+				print("What stat do you want to upgrade?")
+				print("(max for strength and dexterity is 5)")
+				statlist = ["Health"]
+				if self.player.STR <= 4:
+					statlist.append("\nStrength")
+				if self.player.DEX <= 4:
+					statlist.append("\nDexterity")
+				statstring = "".join(statlist)
+				print(statstring)
+				levelchoice = input(":: ")
+				self.player.levelup(levelchoice.lower().strip())
+			else:
+				tolevel = (self.player.level * 25) - self.player.XP
+				print("You don't have enough XP to level up. You need {} more XP.".format(tolevel))
+			return True
 		elif choice.lower().strip() == "save":
 			self.player.save()
 			return True
@@ -254,12 +369,28 @@ class Turn:
 		elif choice.lower().strip() == "end":
 			print("Thank you for playing!")
 			return False
+		elif choice.lower().strip() == "xp":
+			self.player.XP += 5
+			return True
 		else:
 			print('The command "{}" is not available.\n'.format(choice))
 			return True
 			
 	def death(self):
-		pass
+		self.player.deathreset()
+		for i in range(3):
+			print("--------------------")
+			time.sleep(0.1)
+		print("------You Died------")
+		time.sleep(0.1)
+		for i in range(3):
+			print("--------------------")
+			time.sleep(0.1)
+		time.sleep(1)
+		for i in range(10):
+			print("")
+			time.sleep(0.1)
+		print("Your stats and progress were reset to your last save.")
 		
 	#setup for into
 	def setup(self, race):
